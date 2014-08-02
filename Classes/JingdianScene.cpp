@@ -106,7 +106,7 @@ void JingdianScene::addStartLine()
 {
 	//auto b = new Block();
 	//b->createWithArgs(Color3B::YELLOW, Size(visibleSize.width,visibleSize.height/4), "", 10, Color4B::BLACK);
-	auto b = Block::createWithArgs(Color3B::YELLOW, Size(visibleSize.width,visibleSize.height/4), "", 10, Color4B::BLACK);
+	auto b = Block::createWithArgs(Color3B::GREEN, Size(visibleSize.width,visibleSize.height/4), "", 10, Color4B::BLACK);
 	gameLayer->addChild(b);
 	b->setLineIndex(0);
 }

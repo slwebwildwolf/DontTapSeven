@@ -1,14 +1,14 @@
-#include "HelloWorldScene.h"
+#include "BaseScene.h"
 
 USING_NS_CC;
 
-Scene* HelloWorld::createScene()
+Scene* BaseScene::createScene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
     
     // 'layer' is an autorelease object
-    auto layer = HelloWorld::create();
+    auto layer = BaseScene::create();
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -18,7 +18,7 @@ Scene* HelloWorld::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
+bool BaseScene::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -89,7 +89,7 @@ bool HelloWorld::init()
 }
 
 //开始游戏
-void HelloWorld::startGame()
+void BaseScene::startGame()
 {
 	linesCount = 0;
 	showEnd = false;
@@ -102,7 +102,7 @@ void HelloWorld::startGame()
 }
 
 //添加开始的黄色栏
-void HelloWorld::addStartLine()
+void BaseScene::addStartLine()
 {
 	//auto b = new Block();
 	//b->createWithArgs(Color3B::YELLOW, Size(visibleSize.width,visibleSize.height/4), "", 10, Color4B::BLACK);
@@ -112,7 +112,7 @@ void HelloWorld::addStartLine()
 }
 
 //添加结束的绿色栏，占满屏幕
-void HelloWorld::addEndLine()
+void BaseScene::addEndLine()
 {
 	auto b = Block::createWithArgs(Color3B::GREEN, visibleSize, "Game Over", 30, Color4B::BLACK);
 	gameLayer->addChild(b);
@@ -120,7 +120,7 @@ void HelloWorld::addEndLine()
 }
 
 //添加普通的黑白块栏
-void HelloWorld::addNormalLine(int lineIndex)
+void BaseScene::addNormalLine(int lineIndex)
 {
 	linesCount++;
 
@@ -136,7 +136,7 @@ void HelloWorld::addNormalLine(int lineIndex)
 }
 
 //方块下移
-void HelloWorld::moveDown()
+void BaseScene::moveDown()
 {
 	if(linesCount<10)
 	{
@@ -155,7 +155,7 @@ void HelloWorld::moveDown()
 	}
 }
 
-void HelloWorld::update(float dt)
+void BaseScene::update(float dt)
 {
 	long offset = clock()-startTime;
 
@@ -163,7 +163,7 @@ void HelloWorld::update(float dt)
 }
 
 //开始计时
-void HelloWorld::startTimer()
+void BaseScene::startTimer()
 {
 	if(!timeRunning)
 	{
@@ -174,7 +174,7 @@ void HelloWorld::startTimer()
 }
 
 //结束计时
-void HelloWorld::stopTimer()
+void BaseScene::stopTimer()
 {
 	if(timeRunning)
 	{
@@ -184,7 +184,7 @@ void HelloWorld::stopTimer()
 	}
 }
 
-void HelloWorld::menuCloseCallback(Ref* pSender)
+void BaseScene::menuCloseCallback(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");

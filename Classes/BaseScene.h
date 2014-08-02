@@ -1,12 +1,12 @@
-#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+#ifndef __BASE_SCENE_H__
+#define __BASE_SCENE_H__
 
 #include "cocos2d.h"
 #include "Block.h"
 
 USING_NS_CC;
 
-class HelloWorld : public cocos2d::Layer
+class BaseScene : public cocos2d::Layer
 {
 private:
 
@@ -29,7 +29,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+    CREATE_FUNC(BaseScene);
 
 	//添加开始的黄色栏
 	void addStartLine();
@@ -55,4 +55,4 @@ public:
 	virtual void update(float dt);
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif // __BASE_SCENE_H__

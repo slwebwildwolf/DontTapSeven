@@ -1,6 +1,8 @@
 #include "MainMenuScene.h"
 #include "ObjectTag.h"
-#include "HelloWorldScene.h"
+#include "ChanScene.h"
+#include "JiejiScene.h"
+#include "JingdianScene.h"
 USING_NS_CC;
 
 cocos2d::Scene* MainMenu::createScene()
@@ -90,24 +92,45 @@ Sprite* MainMenu::createMenu(Color3B color, Size size,std::string label, float f
 bool MainMenu::onTouchBegan( Touch* t, Event* e )
 {
 	auto target = static_cast<Sprite*>(e->getCurrentTarget());//获取的当前触摸的目标  
-
-	switch (target->getTag())
-	{
-	case ObjectTag_MainMenu_Chan:
+	Point locationInNode = target->convertToNodeSpace(t->getLocation());  
+	Size s = target->getContentSize();
+	Rect rect = Rect(0, 0, s.width, s.height);
+	if (rect.containsPoint(locationInNode))//判断触摸点是否在目标的范围内
+		switch (target->getTag())
 		{
-			auto scene =HelloWorld::createScene();  
-			Director::getInstance()->pushScene(scene); 
+		case ObjectTag_MainMenu_Chan:
+
+
+
+			{
+				auto scene =ChanScene::createScene();  
+				Director::getInstance()->pushScene(scene); 	
+			}
+			break;
+		case ObjectTag_MainMenu_Gengduo:
+			{
+				auto scene =ChanScene::createScene();  
+				Director::getInstance()->pushScene(scene); 
+				CCLog("Chan Scene");		
+			}
+			break;
+		case ObjectTag_MainMenu_Jingdian:
+			{
+				auto scene =JingdianScene::createScene();  
+				Director::getInstance()->pushScene(scene); 
+				CCLog("Jing Dian Scene");		
+			}
+			break;
+		case ObjectTag_MainMenu_Jieji:
+			{
+				auto scene =JiejiScene::createScene();  
+				Director::getInstance()->pushScene(scene); 
+				CCLog("Jie Ji Scene");	
+			}
+			break;
+		default:
 			break;
 		}
-	case ObjectTag_MainMenu_Gengduo:
-		break;
-	case ObjectTag_MainMenu_Jingdian:
-		break;
-	case ObjectTag_MainMenu_Jieji:
-		break;
-	default:
-		break;
-	}
 
 	return false;  
 }
