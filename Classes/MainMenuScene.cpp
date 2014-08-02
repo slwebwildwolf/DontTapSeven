@@ -99,9 +99,6 @@ bool MainMenu::onTouchBegan( Touch* t, Event* e )
 		switch (target->getTag())
 		{
 		case ObjectTag_MainMenu_Chan:
-
-
-
 			{
 				auto scene =ChanScene::createScene();  
 				Director::getInstance()->pushScene(scene); 	

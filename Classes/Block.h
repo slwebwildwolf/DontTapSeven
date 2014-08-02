@@ -17,6 +17,7 @@ private:
 public:
 
 	static Vector<Block*> * getBlocks();
+	static void clearBlocks();
 
 	static Block* createWithArgs(Color3B color, Size size, std::string label, float fontSize, Color4B textColor);
 

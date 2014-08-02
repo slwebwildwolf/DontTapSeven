@@ -180,7 +180,7 @@ void BaseScene::stopTimer()
 	{
 		unscheduleUpdate();
 		timeRunning = false;
-		Director::getInstance()->popScene();
+		//Director::getInstance()->popScene();
 	}
 }
 

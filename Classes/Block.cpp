@@ -78,3 +78,14 @@ void Block::moveDowm()
 			this->removeBlock();
 	}), NULL));
 }
+
+void Block::clearBlocks()
+{
+	while (!blocks->empty())
+	{
+		auto it = blocks->begin();
+		(*it)->removeBlock();	
+		CCLog("clear");
+	}
+
+}

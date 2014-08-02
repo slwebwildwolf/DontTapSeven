@@ -34,6 +34,9 @@ bool JingdianScene::init()
 	gameLayer = Node::create();
 	addChild(gameLayer);
 
+	endLayer = LayerColor::create(Color4B::RED);
+	endLayer->retain();
+
 	timerLabel = Label::create();
 	timerLabel->setColor(Color3B::BLUE);
 	timerLabel->setSystemFontSize(50);
@@ -74,7 +77,7 @@ bool JingdianScene::init()
 				}
 				else
 				{
-					MessageBox("GameOver","失败");
+					endGame();
 				}
 				break;
 			}
@@ -94,7 +97,8 @@ void JingdianScene::startGame()
 	linesCount = 0;
 	showEnd = false;
 	timeRunning = false;
-
+	this->removeChild(endLayer);
+ 
 	addStartLine();
 	addNormalLine(1);
 	addNormalLine(2);
@@ -118,6 +122,18 @@ void JingdianScene::addEndLine()
 	gameLayer->addChild(b);
 	b->setLineIndex(4);
 }
+
+
+void JingdianScene::endGame()
+{
+	Block::clearBlocks();
+	addChild(endLayer,1);
+	 
+	CCLog("Game over");
+}
+
+
+
 
 //添加普通的黑白块栏
 void JingdianScene::addNormalLine(int lineIndex)
@@ -160,6 +176,7 @@ void JingdianScene::update(float dt)
 	long offset = clock()-startTime;
 
 	timerLabel->setString(StringUtils::format("%g",((double)offset)/1000));
+	
 }
 
 //开始计时

@@ -15,6 +15,7 @@ private:
 	bool showEnd;
 	Label *timerLabel;
 	Node *gameLayer;
+	LayerColor *endLayer;
 	long startTime;
 	bool timeRunning;
 
@@ -42,6 +43,9 @@ public:
 
 	//开始游戏
 	void startGame();
+
+	//结束游戏
+	void endGame();
 
 	//方块下移
 	void moveDown();
