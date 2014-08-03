@@ -22,19 +22,23 @@ bool JingdianScene::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !Layer::init() )
+    if ( !Layer::init())
     {
         return false;
     }
+	visibleSize = Director::getInstance()->getVisibleSize();
 
 	srand(time(NULL));
     
-	visibleSize = Director::getInstance()->getVisibleSize();
+	
 
 	initEndLayer();
+
+// 	auto *bgLayer = LayerColor::create(Color4B::WHITE);
+// 	addChild(bgLayer,0);
 	
 	gameLayer = Node::create();
-	addChild(gameLayer);	
+	addChild(gameLayer,1);	
 
 	timerLabel = Label::create();
 	timerLabel->setColor(Color3B::BLUE);
@@ -76,7 +80,17 @@ bool JingdianScene::init()
 				}
 				else
 				{
-					endGame();
+					auto *blink = Sequence::create(
+						 Repeat::create( 
+							 Sequence::create(
+								 TintTo::create(0.1, 255,255, 255),
+								 TintTo::create(0.1, 255,0, 0),
+								 NULL), 				 
+							5),
+						CallFunc::create(this,callfunc_selector(JingdianScene::endGame)),
+						NULL
+						);
+					b->runAction(blink);
 				}
 				break;
 			}
@@ -127,7 +141,7 @@ void JingdianScene::endGame()
 {
 	stopTimer();
 	Block::clearBlocks();
-	addChild(endLayer,1);
+	addChild(endLayer,2);
 	 
 	CCLog("Game over");
 }
