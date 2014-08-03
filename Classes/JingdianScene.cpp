@@ -31,11 +31,10 @@ bool JingdianScene::init()
     
 	visibleSize = Director::getInstance()->getVisibleSize();
 
+	initEndLayer();
+	
 	gameLayer = Node::create();
-	addChild(gameLayer);
-
-	endLayer = LayerColor::create(Color4B::RED);
-	endLayer->retain();
+	addChild(gameLayer);	
 
 	timerLabel = Label::create();
 	timerLabel->setColor(Color3B::BLUE);
@@ -126,6 +125,7 @@ void JingdianScene::addEndLine()
 
 void JingdianScene::endGame()
 {
+	stopTimer();
 	Block::clearBlocks();
 	addChild(endLayer,1);
 	 
@@ -197,7 +197,6 @@ void JingdianScene::stopTimer()
 	{
 		unscheduleUpdate();
 		timeRunning = false;
-		Director::getInstance()->popScene();
 	}
 }
 
@@ -213,4 +212,36 @@ void JingdianScene::menuCloseCallback(Ref* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+
+void JingdianScene::initEndLayer()
+{
+	endLayer = LayerColor::create(Color4B::RED);
+	endLayer->retain();
+
+	ValueVector p_map = FileUtils::getInstance()->getValueVectorFromFile("Chinese.xml");  
+	ValueMap  map=p_map.at(0).asValueMap();
+
+	std::string info1=map.at("chonglai").asString();
+	auto myLabel = LabelBMFont::create(info1, "fonts/Chinese.fnt");
+	auto item1 = MenuItemLabel::create(myLabel, CC_CALLBACK_0(JingdianScene::chongLai, this) );
+
+	std::string info2=map.at("fanhui").asString();
+	auto myLabe2 = LabelBMFont::create(info2, "fonts/Chinese.fnt");
+	auto item2 = MenuItemLabel::create(myLabe2, CC_CALLBACK_0(JingdianScene::fanHui, this) );
+
+	auto menu = Menu::create( item1, item2, NULL);
+	menu->alignItemsHorizontallyWithPadding(50);
+	menu->setPositionY(100);
+	endLayer->addChild(menu);
+}
+
+void JingdianScene::fanHui()
+{
+	Director::getInstance()->popScene();
+}
+
+void JingdianScene::chongLai()
+{
+	startGame();
 }

@@ -11,6 +11,10 @@
         <string>街机</string>
 		<key>gengduo</key>
         <string>更多</string>
+		<key>fanhui</key>
+        <string>返回</string>
+		<key>chonglai</key>
+        <string>重来</string>
     </dict>
   </array>
 </plist>

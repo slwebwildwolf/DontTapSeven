@@ -32,6 +32,9 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(JingdianScene);
 
+	//
+	void initEndLayer();
+
 	//添加开始的黄色栏
 	void addStartLine();
 
@@ -56,7 +59,12 @@ public:
 	//结束计时
 	void stopTimer();
 
+	//
+	void fanHui();
+	void chongLai();
+
 	virtual void update(float dt);
+
 };
 
 #endif // __JINGDIAN_SCENE_H__
