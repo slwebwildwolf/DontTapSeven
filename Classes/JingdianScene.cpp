@@ -29,13 +29,9 @@ bool JingdianScene::init()
 	visibleSize = Director::getInstance()->getVisibleSize();
 
 	srand(time(NULL));
-    
-	
-
-	initEndLayer();
-
-// 	auto *bgLayer = LayerColor::create(Color4B::WHITE);
-// 	addChild(bgLayer,0);
+    lineMax = 10;
+	init_failLayer();
+	init_winLayer();
 	
 	gameLayer = Node::create();
 	addChild(gameLayer,1);	
@@ -71,7 +67,11 @@ bool JingdianScene::init()
 					b->setColor(Color3B::GRAY);
 					this->moveDown();
 					this->startTimer();
-
+					CCLog("%d",Block::getBlocks()->size());
+					if (Block::getBlocks()->size() == 9)
+					{
+						endGame(true);
+					}
 				}
 				else if(b->getColor()==Color3B::GREEN)
 				{
@@ -87,7 +87,7 @@ bool JingdianScene::init()
 								 TintTo::create(0.1, 255,0, 0),
 								 NULL), 				 
 							5),
-						CallFunc::create(this,callfunc_selector(JingdianScene::endGame)),
+						CallFunc::create(CC_CALLBACK_0(JingdianScene::endGame,this,false)),
 						NULL
 						);
 					b->runAction(blink);
@@ -110,8 +110,10 @@ void JingdianScene::startGame()
 	linesCount = 0;
 	showEnd = false;
 	timeRunning = false;
-	this->removeChild(endLayer);
- 
+	this->removeChild(failLayer);
+	this->removeChild(winLayer);
+	Block::clearBlocks();
+
 	addStartLine();
 	addNormalLine(1);
 	addNormalLine(2);
@@ -131,22 +133,25 @@ void JingdianScene::addStartLine()
 //添加结束的绿色栏，占满屏幕
 void JingdianScene::addEndLine()
 {
-	auto b = Block::createWithArgs(Color3B::GREEN, visibleSize, "Game Over", 30, Color4B::BLACK);
+	auto b = Block::createWithArgs(Color3B::GREEN, visibleSize, "", 30, Color4B::BLACK);
 	gameLayer->addChild(b);
 	b->setLineIndex(4);
 }
 
 
-void JingdianScene::endGame()
+void JingdianScene::endGame(bool bWin)
 {
 	stopTimer();
-	Block::clearBlocks();
-	addChild(endLayer,2);
-	 
-	CCLog("Game over");
+	if (bWin)
+	{
+		addChild(winLayer,2);
+	} 
+	else
+	{
+		addChild(failLayer,2);
+	}
+	
 }
-
-
 
 
 //添加普通的黑白块栏
@@ -168,7 +173,7 @@ void JingdianScene::addNormalLine(int lineIndex)
 //方块下移
 void JingdianScene::moveDown()
 {
-	if(linesCount<10)
+	if(linesCount<lineMax)
 	{
 		addNormalLine(4);
 	}
@@ -228,10 +233,21 @@ void JingdianScene::menuCloseCallback(Ref* pSender)
 #endif
 }
 
-void JingdianScene::initEndLayer()
+
+void JingdianScene::fanHui()
 {
-	endLayer = LayerColor::create(Color4B::RED);
-	endLayer->retain();
+	Director::getInstance()->popScene();
+}
+
+void JingdianScene::chongLai()
+{
+	startGame();
+}
+
+void JingdianScene::init_failLayer()
+{
+	failLayer = LayerColor::create(Color4B::RED);
+	failLayer->retain();
 
 	ValueVector p_map = FileUtils::getInstance()->getValueVectorFromFile("Chinese.xml");  
 	ValueMap  map=p_map.at(0).asValueMap();
@@ -247,15 +263,27 @@ void JingdianScene::initEndLayer()
 	auto menu = Menu::create( item1, item2, NULL);
 	menu->alignItemsHorizontallyWithPadding(50);
 	menu->setPositionY(100);
-	endLayer->addChild(menu);
+	failLayer->addChild(menu);
 }
 
-void JingdianScene::fanHui()
+void JingdianScene::init_winLayer()
 {
-	Director::getInstance()->popScene();
-}
+	winLayer = LayerColor::create(Color4B::GREEN);
+	winLayer->retain();
 
-void JingdianScene::chongLai()
-{
-	startGame();
+	ValueVector p_map = FileUtils::getInstance()->getValueVectorFromFile("Chinese.xml");  
+	ValueMap  map=p_map.at(0).asValueMap();
+
+	std::string info1=map.at("chonglai").asString();
+	auto myLabel = LabelBMFont::create(info1, "fonts/Chinese.fnt");
+	auto item1 = MenuItemLabel::create(myLabel, CC_CALLBACK_0(JingdianScene::chongLai, this) );
+
+	std::string info2=map.at("fanhui").asString();
+	auto myLabe2 = LabelBMFont::create(info2, "fonts/Chinese.fnt");
+	auto item2 = MenuItemLabel::create(myLabe2, CC_CALLBACK_0(JingdianScene::fanHui, this) );
+
+	auto menu = Menu::create( item1, item2, NULL);
+	menu->alignItemsHorizontallyWithPadding(50);
+	menu->setPositionY(100);
+	winLayer->addChild(menu);
 }

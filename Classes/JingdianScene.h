@@ -12,10 +12,12 @@ private:
 
 	Size visibleSize;
 	int linesCount;
+	int lineMax;
 	bool showEnd;
 	Label *timerLabel;
 	Node *gameLayer;
-	LayerColor *endLayer;
+	LayerColor *failLayer;
+	LayerColor *winLayer;
 	long startTime;
 	bool timeRunning;
 
@@ -33,8 +35,8 @@ public:
     CREATE_FUNC(JingdianScene);
 
 	//
-	void initEndLayer();
-
+	void init_failLayer();
+	void init_winLayer();
 	//添加开始的黄色栏
 	void addStartLine();
 
@@ -48,7 +50,7 @@ public:
 	void startGame();
 
 	//结束游戏
-	void endGame();
+	void endGame(bool bWin);
 
 	//方块下移
 	void moveDown();
