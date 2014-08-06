@@ -16,9 +16,9 @@ private:
 	bool showEnd;
 	Label *timerLabel;
 	Node *gameLayer;
-	LayerColor *failLayer;
-	LayerColor *winLayer;
+	LayerColor *endLayer;
 	long startTime;
+	long gameTime;
 	bool timeRunning;
 
 public:
@@ -35,8 +35,7 @@ public:
     CREATE_FUNC(JingdianScene);
 
 	//
-	void init_failLayer();
-	void init_winLayer();
+	LayerColor* createEndLayer(Color4B bgColor,std::string info1,std::string info2,std::string info3);
 	//添加开始的黄色栏
 	void addStartLine();
 

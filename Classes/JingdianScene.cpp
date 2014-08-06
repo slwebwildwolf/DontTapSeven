@@ -1,4 +1,5 @@
 #include "JingdianScene.h"
+#include "Utility.h"
 
 USING_NS_CC;
 
@@ -29,12 +30,12 @@ bool JingdianScene::init()
 	visibleSize = Director::getInstance()->getVisibleSize();
 
 	srand(time(NULL));
-    lineMax = 10;
-	init_failLayer();
-	init_winLayer();
-	
+    lineMax = 5;
+// 	init_failLayer();
+// 	init_winLayer();
+
 	gameLayer = Node::create();
-	addChild(gameLayer,1);	
+	addChild(gameLayer);	
 
 	timerLabel = Label::create();
 	timerLabel->setColor(Color3B::BLUE);
@@ -110,8 +111,7 @@ void JingdianScene::startGame()
 	linesCount = 0;
 	showEnd = false;
 	timeRunning = false;
-	this->removeChild(failLayer);
-	this->removeChild(winLayer);
+	removeChildByName("endLayer");
 	Block::clearBlocks();
 
 	addStartLine();
@@ -137,22 +137,6 @@ void JingdianScene::addEndLine()
 	gameLayer->addChild(b);
 	b->setLineIndex(4);
 }
-
-
-void JingdianScene::endGame(bool bWin)
-{
-	stopTimer();
-	if (bWin)
-	{
-		addChild(winLayer,2);
-	} 
-	else
-	{
-		addChild(failLayer,2);
-	}
-	
-}
-
 
 //添加普通的黑白块栏
 void JingdianScene::addNormalLine(int lineIndex)
@@ -192,9 +176,9 @@ void JingdianScene::moveDown()
 
 void JingdianScene::update(float dt)
 {
-	long offset = clock()-startTime;
+	gameTime = clock()-startTime;
 
-	timerLabel->setString(StringUtils::format("%g",((double)offset)/1000));
+	timerLabel->setString(StringUtils::format("%g",((double)gameTime)/1000));
 	
 }
 
@@ -244,36 +228,53 @@ void JingdianScene::chongLai()
 	startGame();
 }
 
-void JingdianScene::init_failLayer()
+
+void JingdianScene::endGame(bool bWin)
 {
-	failLayer = LayerColor::create(Color4B::RED);
-	failLayer->retain();
-
-	ValueVector p_map = FileUtils::getInstance()->getValueVectorFromFile("Chinese.xml");  
-	ValueMap  map=p_map.at(0).asValueMap();
-
-	std::string info1=map.at("chonglai").asString();
-	auto myLabel = LabelBMFont::create(info1, "fonts/Chinese.fnt");
-	auto item1 = MenuItemLabel::create(myLabel, CC_CALLBACK_0(JingdianScene::chongLai, this) );
-
-	std::string info2=map.at("fanhui").asString();
-	auto myLabe2 = LabelBMFont::create(info2, "fonts/Chinese.fnt");
-	auto item2 = MenuItemLabel::create(myLabe2, CC_CALLBACK_0(JingdianScene::fanHui, this) );
-
-	auto menu = Menu::create( item1, item2, NULL);
-	menu->alignItemsHorizontallyWithPadding(50);
-	menu->setPositionY(100);
-	failLayer->addChild(menu);
+	stopTimer();
+	long bestTime = LoadIntegerFromXML("Jingdian",0);
+	if (bWin)
+	{		
+		if (gameTime< bestTime || bestTime == 0)
+		{
+			bestTime = gameTime;
+			SaveIntegerToXML("Jingdian",bestTime);
+		}
+		addChild(createEndLayer(Color4B::GREEN,"jingdianmoshi",timerLabel->getString(),StringUtils::format("%g",((double)bestTime)/1000)),2);
+	} 
+	else
+	{
+		addChild(createEndLayer(Color4B::RED,"jingdianmoshi","",StringUtils::format("%g",((double)bestTime)/1000)),2);
+	}
 }
 
-void JingdianScene::init_winLayer()
+LayerColor* JingdianScene::createEndLayer(Color4B bgColor,std::string moshi,std::string score,std::string best)
 {
-	winLayer = LayerColor::create(Color4B::GREEN);
-	winLayer->retain();
+	auto endLayer = LayerColor::create(bgColor);
+	//endLayer->retain();
+	endLayer->setName("endLayer");
 
 	ValueVector p_map = FileUtils::getInstance()->getValueVectorFromFile("Chinese.xml");  
 	ValueMap  map=p_map.at(0).asValueMap();
+	//模式
+	moshi=map.at(moshi).asString();
+	auto moshilb = LabelBMFont::create(moshi, "fonts/Chinese.fnt");
+	moshilb->setPosition(visibleSize.width / 2,visibleSize.height-100);
+	endLayer->addChild(moshilb);
+	//失败 or 成绩
+	if (score == "")
+	{
+		score=map.at("shibai").asString();
+	}	 
+	auto scorelb = LabelBMFont::create(score, "fonts/Chinese.fnt");
+	scorelb->setPosition(visibleSize.width / 2,visibleSize.height /2+30);
+	endLayer->addChild(scorelb);
+	//最佳
 
+	auto bestlb = LabelBMFont::create(map.at("zuijia").asString()+best, "fonts/Chinese.fnt");
+	bestlb->setPosition(visibleSize.width / 2,visibleSize.height /2-30);
+	endLayer->addChild(bestlb);
+	//
 	std::string info1=map.at("chonglai").asString();
 	auto myLabel = LabelBMFont::create(info1, "fonts/Chinese.fnt");
 	auto item1 = MenuItemLabel::create(myLabel, CC_CALLBACK_0(JingdianScene::chongLai, this) );
@@ -285,5 +286,7 @@ void JingdianScene::init_winLayer()
 	auto menu = Menu::create( item1, item2, NULL);
 	menu->alignItemsHorizontallyWithPadding(50);
 	menu->setPositionY(100);
-	winLayer->addChild(menu);
+	endLayer->addChild(menu);
+	
+	return endLayer;
 }

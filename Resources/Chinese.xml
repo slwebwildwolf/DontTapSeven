@@ -15,6 +15,14 @@
         <string>返回</string>
 		<key>chonglai</key>
         <string>重来</string>
+		<key>jingdianmoshi</key>
+        <string>经典模式</string>
+		<key>shibai</key>
+        <string>失败</string>
+		<key>zuijia</key>
+        <string>最佳</string>
+		<key>moshi</key>
+        <string>模式</string>
     </dict>
   </array>
 </plist>
