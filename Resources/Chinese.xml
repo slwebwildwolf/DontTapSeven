@@ -3,26 +3,29 @@
 <plist version="1.0">
   <array>
     <dict>
-      <key>chan</key>
-        <string>禅</string>
+		
 		<key>jingdian</key>
-        <string>经典</string>
+		<string>经典</string>
 		<key>jieji</key>
-        <string>街机</string>
+		<string>街机</string>
+		<key>chan</key>
+		<string>禅</string>
+		<key>jisu</key>
+		<string>极速</string>
+		<key>sleep</key>
+		<string>催眠</string>
 		<key>gengduo</key>
-        <string>更多</string>
-		<key>fanhui</key>
-        <string>返回</string>
-		<key>chonglai</key>
-        <string>重来</string>
-		<key>jingdianmoshi</key>
-        <string>经典模式</string>
-		<key>shibai</key>
-        <string>失败</string>
-		<key>zuijia</key>
-        <string>最佳</string>
+		<string>更多</string>
 		<key>moshi</key>
-        <string>模式</string>
+		<string>模式</string>
+		<key>shibai</key>
+		<string>失败</string>
+		<key>zuijia</key>
+		<string>最佳</string>
+		<key>chonglai</key>
+		<string>重来</string>
+		<key>fanhui</key>
+		<string>返回</string>
     </dict>
   </array>
 </plist>

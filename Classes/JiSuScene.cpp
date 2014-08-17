@@ -1,14 +1,15 @@
-#include "JiejiScene.h"
+#include "JiSuScene.h"
 #include "ConstValue.h"
+
 USING_NS_CC;
 
-Scene* JiejiScene::createScene()
+Scene* JiSuScene::createScene()
 {
 	// 'scene' is an autorelease object
 	auto scene = Scene::create();
 
 	// 'layer' is an autorelease object
-	auto layer = JiejiScene::create();
+	auto layer = JiSuScene::create();
 
 	// add layer as a child to scene
 	scene->addChild(layer);
@@ -17,58 +18,64 @@ Scene* JiejiScene::createScene()
 	return scene;
 }
 
-//开始游戏
-void JiejiScene::startGame()
+void JiSuScene::startGame()
 {
-	lineMax = JieJi_LineMax;
-	moveSpeed = JieJI_Speed;
-	moshi = "jieji";
+	scoreSpeed = 0;
+	lineMax = JiSu_LineMax;
+	moveSpeed = JiSu_Speed;
+	moshi = "jisu";
 	BaseScene::startGame();	
-	timerLabel->setString(StringUtils::format("%d",scoreLine));	
+	timerLabel->setString(StringUtils::format("%g",scoreSpeed));	
 }
 
-void JiejiScene::update(float dt)
+void JiSuScene::update(float dt)
 {
-	timerLabel->setString(StringUtils::format("%d",scoreLine));
+	if(timeRunning)
+	{
+		gameTime = clock()-startTime;
+		scoreSpeed = scoreLine*1000/((double)gameTime);
+		timerLabel->setString(StringUtils::format("%g",scoreSpeed));
+	}
 }
 
 //开始计时
-void JiejiScene::startTimer()
+void JiSuScene::startTimer()
 {
 	if(!timeRunning)
 	{
 		scheduleUpdate();
+		startTime = clock();
 		timeRunning = true;
-		schedule(schedule_selector(JiejiScene::logic), moveSpeed);
+		schedule(schedule_selector(JiSuScene::logic), moveSpeed);
 	}
 }
 
 //结束计时
-void JiejiScene::stopTimer()
+void JiSuScene::stopTimer()
 {
 	if(timeRunning)
 	{
-		unscheduleUpdate();
 		timeRunning = false;
-		unschedule(schedule_selector(JiejiScene::logic));
+		unscheduleUpdate();		
+		unschedule(schedule_selector(JiSuScene::logic));
 	}
 }
 
 
-void JiejiScene::endGame(bool bWin)
+void JiSuScene::endGame(bool bWin)
 {
 	stopTimer();
-	int bestScore = LoadIntegerFromXML(moshi.c_str(),0);
-	if (scoreLine> bestScore || bestScore == 0)
+	double bestScore = LoadDoubleToXML(moshi.c_str(),0);
+	if (scoreSpeed> bestScore || bestScore == 0)
 	{
-		bestScore = scoreLine;
+		bestScore = scoreSpeed;
 		SaveIntegerToXML(moshi.c_str(),bestScore);
 	}
-	addChild(createEndLayer(Color4B::GREEN,moshi,timerLabel->getString(),StringUtils::format("%d",bestScore)),2);
+	addChild(createEndLayer(Color4B::GREEN,moshi,timerLabel->getString(),StringUtils::format("%g",bestScore)),2);
 
 }
 
-void JiejiScene::logic( float dt )
+void JiSuScene::logic( float dt )
 {
 	moveDown(dt);
 	auto bs = Block::getBlocks();
@@ -86,7 +93,7 @@ void JiejiScene::logic( float dt )
 	}
 }
 
-void JiejiScene::playRight( Block* b )
+void JiSuScene::playRight( Block* b )
 {
 	BaseScene::playRight(b);
 	b->setColor(Color3B::GRAY);
@@ -103,7 +110,7 @@ void JiejiScene::playRight( Block* b )
 	}
 }
 
-void JiejiScene::playError( Block* b )
+void JiSuScene::playError( Block* b )
 {
 	BaseScene::playError(b);
 	this->stopTimer();
@@ -114,10 +121,8 @@ void JiejiScene::playError( Block* b )
 		TintTo::create(0.1, 255,0, 0),
 		NULL), 				 
 		5),
-		CallFunc::create(CC_CALLBACK_0(JiejiScene::endGame,this,false)),
+		CallFunc::create(CC_CALLBACK_0(JiSuScene::endGame,this,false)),
 		NULL
 		);
 	b->runAction(blink);
 }
-
-

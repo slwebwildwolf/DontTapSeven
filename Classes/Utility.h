@@ -1,16 +1,27 @@
-#ifndef Utility_H
+﻿#ifndef Utility_H
 #define Utility_H
 
-#define SaveStringToXML CCUserDefault::getInstance()->setStringForKey
+#include "cocos2d.h"
 
-#define SaveIntegerToXML CCUserDefault::getInstance()->setIntegerForKey
+USING_NS_CC;
 
 #define SaveBooleanToXML CCUserDefault::getInstance()->setBoolForKey
-
-#define LoadStringFromXML CCUserDefault::getInstance()->getStringForKey
-
-#define LoadIntegerFromXML CCUserDefault::getInstance()->getIntegerForKey
+#define SaveStringToXML CCUserDefault::getInstance()->setStringForKey
+#define SaveIntegerToXML CCUserDefault::getInstance()->setIntegerForKey
+#define SaveDoubleToXML CCUserDefault::getInstance()->setDoubleForKey
 
 #define LoadBooleanFromXML CCUserDefault::getInstance()->getBoolForKey
+#define LoadStringFromXML CCUserDefault::getInstance()->getStringForKey
+#define LoadIntegerFromXML CCUserDefault::getInstance()->getIntegerForKey
+#define LoadDoubleToXML CCUserDefault::getInstance()->getDoubleForKey
+
+//检查7
+template<class T> std::string ConverToString(T value);
+bool checkSeven(int num);
+
+std::string GetXMLString(std::string v);
+ 
 
 #endif
+
+

@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "MainMenuScene.h"
+#include "Piano.h"
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -33,13 +34,14 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
-
+	
     // create a scene. it's an autorelease object
     auto scene = MainMenu::createScene();
 
     // run
     director->runWithScene(scene);
-
+//
+	Piano::getInstance()->init();
     return true;
 }
 

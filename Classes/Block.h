@@ -13,6 +13,7 @@ private:
 	//”√¿¥¥Ê∑≈block
 	static Vector<Block*> * blocks;
 	int lineIndex;
+	int lineCount;
 
 public:
 
@@ -31,7 +32,10 @@ public:
 
 	int getLineIndex();
 
-	void moveDowm();
+	void setLineCount(int lineCount);
+	int getLineCount();
+
+	void moveDowm(float dt = 0.1f);
 	
 };
 

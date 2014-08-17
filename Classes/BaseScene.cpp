@@ -2,37 +2,22 @@
 
 USING_NS_CC;
 
-Scene* BaseScene::createScene()
-{
-    // 'scene' is an autorelease object
-    auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
-    auto layer = BaseScene::create();
 
-    // add layer as a child to scene
-    scene->addChild(layer);
-
-    // return the scene
-    return scene;
-}
-
-// on "init" you need to initialize your instance
 bool BaseScene::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Layer::init() )
-    {
-        return false;
-    }
-
-	srand(time(NULL));
-    
+	//////////////////////////////
+	// 1. super init first
+	if ( !Layer::init())
+	{
+		return false;
+	}
 	visibleSize = Director::getInstance()->getVisibleSize();
 
+	srand(time(NULL));
+
+	scoreLine = 0;
 	gameLayer = Node::create();
-	addChild(gameLayer);
+	addChild(gameLayer);	
 
 	timerLabel = Label::create();
 	timerLabel->setColor(Color3B::BLUE);
@@ -40,10 +25,6 @@ bool BaseScene::init()
 	timerLabel->setString("0.000\"");
 	timerLabel->setPosition(visibleSize.width/2, visibleSize.height-30);
 	addChild(timerLabel);
-
-	//addStartLine();
-	
-	//addEndLine();
 
 	startGame();
 
@@ -57,64 +38,101 @@ bool BaseScene::init()
 		for(auto it = bs->begin(); it != bs->end(); it++)
 		{
 			b = *it;
-
-			if(b->getLineIndex()==1&&b->getBoundingBox().containsPoint(t->getLocation()))
+			currentLine = b->getLineCount();
+			if(currentLine - scoreLine ==1&&b->getBoundingBox().containsPoint(t->getLocation()))
 			{
-				if(b->getColor()==Color3B::BLACK)
+				++scoreLine;
+				if((b->getColor()==Color3B::BLACK && !checkSeven(currentLine)) ||
+					(b->getColor()==Color3B::WHITE && checkSeven(currentLine)))
 				{
-					b->setColor(Color3B::GRAY);
-					this->moveDown();
-					this->startTimer();
-
-				}
-				else if(b->getColor()==Color3B::GREEN)
-				{
-					this->moveDown();
-					this->stopTimer();
+					playRight(b);
+					
 				}
 				else
 				{
-					MessageBox("GameOver","失败");
+					playError(b);
 				}
 				break;
 			}
 		}
-
 		return false;
 	};
 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-    return true;
+	schedule(schedule_selector(BaseScene::test), 0.5f);
+
+	return true;
 }
 
-//开始游戏
-void BaseScene::startGame()
+
+LayerColor* BaseScene::createEndLayer(Color4B bgColor,std::string moshi,std::string score,std::string best )
 {
-	linesCount = 0;
-	showEnd = false;
-	timeRunning = false;
+	auto endLayer = LayerColor::create(bgColor);
+	endLayer->setName("endLayer");
+	//模式
+	auto moshilb = Label::create();
+	moshilb->setString(GetXMLString(moshi)+GetXMLString("moshi"));
+	moshilb->setPosition(visibleSize.width / 2,visibleSize.height-100);
+	moshilb->setSystemFontSize(36);
+	endLayer->addChild(moshilb);
+	//失败 or 成绩
+	if (score == "")
+	{
+		score=GetXMLString("shibai");
+	}	 
+	auto scorelb = Label::create();
+	scorelb->setString(score);
+	scorelb->setPosition(visibleSize.width / 2,visibleSize.height /2+30);
+	scorelb->setSystemFontSize(36);
+	endLayer->addChild(scorelb);
+	//最佳
+	auto bestlb =Label::create();
+	bestlb->setString(GetXMLString("zuijia")+best);
+	bestlb->setPosition(visibleSize.width / 2,visibleSize.height /2-30);
+	bestlb->setSystemFontSize(36);
+	endLayer->addChild(bestlb);
+	//
+	auto chonglailb = Label::create();
+	chonglailb->setString(GetXMLString("chonglai"));
+	chonglailb->setSystemFontSize(36);
+	auto item1 = MenuItemLabel::create(chonglailb, CC_CALLBACK_0(BaseScene::chongLai, this) );
 
-	addStartLine();
-	addNormalLine(1);
-	addNormalLine(2);
-	addNormalLine(3);
+	auto fanhuilb = Label::create();
+	fanhuilb->setString(GetXMLString("fanhui"));
+	fanhuilb->setSystemFontSize(36);
+	auto item2 = MenuItemLabel::create(fanhuilb, CC_CALLBACK_0(BaseScene::fanHui, this) );
+
+	auto menu = Menu::create( item1, item2, NULL);
+	menu->alignItemsHorizontallyWithPadding(50);
+	menu->setPositionY(100);
+	endLayer->addChild(menu);
+
+	return endLayer;
 }
 
-//添加开始的黄色栏
+void BaseScene::chongLai()
+{
+	startGame();
+}
+void BaseScene::fanHui()
+{
+	Director::getInstance()->popScene();
+}
+
+//添加开始的栏
 void BaseScene::addStartLine()
 {
-	//auto b = new Block();
-	//b->createWithArgs(Color3B::YELLOW, Size(visibleSize.width,visibleSize.height/4), "", 10, Color4B::BLACK);
-	auto b = Block::createWithArgs(Color3B::YELLOW, Size(visibleSize.width,visibleSize.height/4), "", 10, Color4B::BLACK);
+	auto b = Block::createWithArgs(Color3B::GREEN, Size(visibleSize.width,visibleSize.height/4), "", 10, Color4B::BLACK);
 	gameLayer->addChild(b);
 	b->setLineIndex(0);
+	b->setLineCount(linesCount);
 }
 
 //添加结束的绿色栏，占满屏幕
 void BaseScene::addEndLine()
 {
-	auto b = Block::createWithArgs(Color3B::GREEN, visibleSize, "Game Over", 30, Color4B::BLACK);
+	auto b = Block::createWithArgs(Color3B::GREEN, visibleSize, "", 30, Color4B::BLACK);
 	gameLayer->addChild(b);
 	b->setLineIndex(4);
 }
@@ -131,14 +149,15 @@ void BaseScene::addNormalLine(int lineIndex)
 		b = Block::createWithArgs(blackIndex == i ? Color3B::BLACK : Color3B::WHITE, Size(visibleSize.width/4-1,visibleSize.height/4-1), "", 20, Color4B::BLACK);
 		b->setPosition(i*visibleSize.width/4, lineIndex*visibleSize.height/4);
 		b->setLineIndex(lineIndex);
+		b->setLineCount(linesCount);
 		gameLayer->addChild(b);
 	}
 }
 
 //方块下移
-void BaseScene::moveDown()
+void BaseScene::moveDown(float dt)
 {
-	if(linesCount<10)
+	if(linesCount<lineMax)
 	{
 		addNormalLine(4);
 	}
@@ -151,49 +170,54 @@ void BaseScene::moveDown()
 	auto bs = Block::getBlocks();
 	for(auto it=bs->begin(); it!=bs->end(); it++)
 	{
-		(*it)->moveDowm();
+		(*it)->moveDowm(dt);
 	}
 }
 
-void BaseScene::update(float dt)
-{
-	long offset = clock()-startTime;
-
-	timerLabel->setString(StringUtils::format("%g",((double)offset)/1000));
-}
-
-//开始计时
-void BaseScene::startTimer()
-{
-	if(!timeRunning)
-	{
-		scheduleUpdate();
-		startTime = clock();
-		timeRunning = true;
-	}
-}
-
-//结束计时
-void BaseScene::stopTimer()
-{
-	if(timeRunning)
-	{
-		unscheduleUpdate();
-		timeRunning = false;
-		//Director::getInstance()->popScene();
-	}
-}
-
-void BaseScene::menuCloseCallback(Ref* pSender)
+void BaseScene::menuCloseCallback( cocos2d::Ref* pSender )
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
-    return;
+	return;
 #endif
 
-    Director::getInstance()->end();
+	Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
+	exit(0);
 #endif
+}
+
+void BaseScene::startGame()
+{
+	linesCount = 0;
+	scoreLine = 0;
+	showEnd = false;
+	timeRunning = false;
+	removeChildByName("endLayer");
+	Block::clearBlocks();
+
+	addStartLine();
+	addNormalLine(1);
+	addNormalLine(2);
+	addNormalLine(3);
+	
+	log("Base startgame");	
+}
+
+void BaseScene::playRight( Block* b )
+{
+	Piano::getInstance()->playMusic();
+	log("Base play right!!");
+}
+
+void BaseScene::playError( Block* b )
+{
+	Piano::getInstance()->playMistake();
+	log("Base play error!!");
+}
+
+void BaseScene::test( float dt )
+{
+	Piano::getInstance()->playMusic();
 }
