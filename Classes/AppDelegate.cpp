@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
-#include "MainMenuScene.h"
-#include "Piano.h"
+#include "StartScene.h"
+
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -16,8 +16,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
 
-
-
     if(!glview) {
         glview = GLView::create("My Game");
         director->setOpenGLView(glview);
@@ -25,8 +23,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 		glview->setFrameSize(320,480);
-
-   
+ 
 	glview->setDesignResolutionSize(320,480,ResolutionPolicy::EXACT_FIT);
 
     // turn on display FPS
@@ -36,12 +33,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 	
     // create a scene. it's an autorelease object
-    auto scene = MainMenu::createScene();
+    auto scene = StartScene::createScene();
 
     // run
     director->runWithScene(scene);
-//
-	Piano::getInstance()->init();
+
     return true;
 }
 
