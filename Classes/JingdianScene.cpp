@@ -24,16 +24,14 @@ void JingdianScene::startGame()
 	moshi = "jingdian";
 	lineMax = Chan_LineMax;
 	BaseScene::startGame();
-	
+	setScoreLabel("0.000");
 	
 }
 
 void JingdianScene::update(float dt)
 {
 	gameTime = clock()-startTime;
-
-	timerLabel->setString(StringUtils::format("%g",((double)gameTime)/1000));
-	
+	setScoreLabel(StringUtils::format("%g",((double)gameTime)/1000));	
 }
 
 //开始计时
@@ -69,7 +67,7 @@ void JingdianScene::endGame(bool bWin)
 			bestTime = gameTime;
 			SaveIntegerToXML(moshi.c_str(),bestTime);
 		}
-		addChild(createEndLayer(Color4B::GREEN,moshi,timerLabel->getString(),StringUtils::format("%g",((double)bestTime)/1000)),2);
+		addChild(createEndLayer(Color4B::GREEN,moshi,scoreLabel->getString(),StringUtils::format("%g",((double)bestTime)/1000)),2);
 	} 
 	else
 	{

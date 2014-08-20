@@ -25,7 +25,7 @@ void JiSuScene::startGame()
 	moveSpeed = JiSu_Speed;
 	moshi = "jisu";
 	BaseScene::startGame();	
-	timerLabel->setString(StringUtils::format("%g",scoreSpeed));	
+	setScoreLabel(StringUtils::format("%g",scoreSpeed));	
 }
 
 void JiSuScene::update(float dt)
@@ -34,7 +34,7 @@ void JiSuScene::update(float dt)
 	{
 		gameTime = clock()-startTime;
 		scoreSpeed = scoreLine*1000/((double)gameTime);
-		timerLabel->setString(StringUtils::format("%g",scoreSpeed));
+		setScoreLabel(StringUtils::format("%g",scoreSpeed));
 	}
 }
 
@@ -71,7 +71,7 @@ void JiSuScene::endGame(bool bWin)
 		bestScore = scoreSpeed;
 		SaveIntegerToXML(moshi.c_str(),bestScore);
 	}
-	addChild(createEndLayer(Color4B::GREEN,moshi,timerLabel->getString(),StringUtils::format("%g",bestScore)),2);
+	addChild(createEndLayer(Color4B::GREEN,moshi,scoreLabel->getString(),StringUtils::format("%g",bestScore)),2);
 
 }
 

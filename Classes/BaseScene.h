@@ -20,14 +20,15 @@ protected:
 	bool timeRunning;
 	long startTime;
 	long gameTime;
+	long moveTime;
 	float moveSpeed;
-	Label *timerLabel;
+	LabelAtlas* scoreLabel;
 	Node *gameLayer;
 	LayerColor *endLayer;
 	std::string moshi;
 public:
 	virtual bool init();  
-
+	void setScoreLabel(std::string text,float size = 0.5 ,Color3B color = Color3B::GREEN);
 	//添加开始的栏
 	void addStartLine();
 	//添加结束的绿色栏，占满屏幕

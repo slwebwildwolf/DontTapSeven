@@ -2,7 +2,6 @@
 
 USING_NS_CC;
 
-
 bool BaseScene::init()
 {
 	//////////////////////////////
@@ -19,12 +18,10 @@ bool BaseScene::init()
 	gameLayer = Node::create();
 	addChild(gameLayer);	
 
-	timerLabel = Label::create();
-	timerLabel->setColor(Color3B::BLUE);
-	timerLabel->setSystemFontSize(50);
-	timerLabel->setString("0.000\"");
-	timerLabel->setPosition(visibleSize.width/2, visibleSize.height-30);
-	addChild(timerLabel);
+	//scoreLabel = Label::createWithBMFont("fonts/score_font.fnt", "");
+	scoreLabel = LabelAtlas::create("123 Test", "fonts/tuffy_bold_italic-charmap.png", 48, 64, ' ');
+	scoreLabel->setPosition(visibleSize.width/2, visibleSize.height-30);
+	this->addChild(scoreLabel);;
 
 	startGame();
 
@@ -45,8 +42,7 @@ bool BaseScene::init()
 				if((b->getColor()==Color3B::BLACK && !checkSeven(currentLine)) ||
 					(b->getColor()==Color3B::WHITE && checkSeven(currentLine)))
 				{
-					playRight(b);
-					
+					playRight(b);					
 				}
 				else
 				{
@@ -60,7 +56,7 @@ bool BaseScene::init()
 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	schedule(schedule_selector(BaseScene::test), 0.5f);
+	//schedule(schedule_selector(BaseScene::test), 0.5f);
 
 	return true;
 }
@@ -157,6 +153,7 @@ void BaseScene::addNormalLine(int lineIndex)
 //·½¿éÏÂÒÆ
 void BaseScene::moveDown(float dt)
 {
+	moveTime = clock();
 	if(linesCount<lineMax)
 	{
 		addNormalLine(4);
@@ -194,6 +191,7 @@ void BaseScene::startGame()
 	scoreLine = 0;
 	showEnd = false;
 	timeRunning = false;
+	moveSpeed=0;
 	removeChildByName("endLayer");
 	Block::clearBlocks();
 
@@ -220,4 +218,11 @@ void BaseScene::playError( Block* b )
 void BaseScene::test( float dt )
 {
 	Piano::getInstance()->playMusic();
+}
+
+void  BaseScene::setScoreLabel(std::string text,float size,Color3B color)
+{	 
+	scoreLabel->setString(text);
+	scoreLabel->setColor(color);
+	scoreLabel->setScale(size);	
 }

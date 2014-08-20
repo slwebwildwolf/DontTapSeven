@@ -21,25 +21,29 @@ Scene* JiejiScene::createScene()
 void JiejiScene::startGame()
 {
 	lineMax = JieJi_LineMax;
-	moveSpeed = JieJI_Speed;
 	moshi = "jieji";
 	BaseScene::startGame();	
-	timerLabel->setString(StringUtils::format("%d",scoreLine));	
+	setScoreLabel(StringUtils::format("%d",scoreLine));	
 }
 
 void JiejiScene::update(float dt)
 {
-	timerLabel->setString(StringUtils::format("%d",scoreLine));
+	setScoreLabel(StringUtils::format("%d",scoreLine));
+	if ((clock()-moveTime)/1000.0f > 1.0f/moveSpeed)
+	{
+		logic(1/moveSpeed);
+	}		
 }
 
 //开始计时
 void JiejiScene::startTimer()
 {
 	if(!timeRunning)
-	{
-		scheduleUpdate();
+	{		
 		timeRunning = true;
-		schedule(schedule_selector(JiejiScene::logic), moveSpeed);
+		moveSpeed = JieJI_Speed;
+		moveTime = clock();
+		scheduleUpdate();
 	}
 }
 
@@ -50,10 +54,8 @@ void JiejiScene::stopTimer()
 	{
 		unscheduleUpdate();
 		timeRunning = false;
-		unschedule(schedule_selector(JiejiScene::logic));
 	}
 }
-
 
 void JiejiScene::endGame(bool bWin)
 {
@@ -64,12 +66,11 @@ void JiejiScene::endGame(bool bWin)
 		bestScore = scoreLine;
 		SaveIntegerToXML(moshi.c_str(),bestScore);
 	}
-	addChild(createEndLayer(Color4B::GREEN,moshi,timerLabel->getString(),StringUtils::format("%d",bestScore)),2);
-
+	addChild(createEndLayer(Color4B::GREEN,moshi,scoreLabel->getString(),StringUtils::format("%d",bestScore)),2);
 }
 
 void JiejiScene::logic( float dt )
-{
+{	 
 	moveDown(dt);
 	auto bs = Block::getBlocks();
 	Block *b;
@@ -80,7 +81,7 @@ void JiejiScene::logic( float dt )
 		if(b->getLineIndex()==-1
 			&&b->getLineCount()>scoreLine+1)
 		{
-			endGame(false);
+			//endGame(false);
 			break;
 		}
 	}
@@ -90,13 +91,13 @@ void JiejiScene::playRight( Block* b )
 {
 	BaseScene::playRight(b);
 	b->setColor(Color3B::GRAY);
-	if (currentLine == 1)
-	{
-		this->moveDown(moveSpeed);
-	}
+	
 
 	this->startTimer();
-
+if (currentLine == 1)
+	{
+		this->moveDown(1.0f/moveSpeed);
+	}
 	if (scoreLine == lineMax)
 	{
 		endGame(true);
