@@ -1,5 +1,6 @@
 #include "JiejiScene.h"
 #include "ConstValue.h"
+
 USING_NS_CC;
 
 Scene* JiejiScene::createScene()
@@ -28,11 +29,12 @@ void JiejiScene::startGame()
 
 void JiejiScene::update(float dt)
 {
-	setScoreLabel(StringUtils::format("%d",scoreLine));
-	if ((clock()-moveTime)/1000.0f > 1.0f/moveSpeed)
-	{
-		logic(1/moveSpeed);
-	}		
+	if(timeRunning)
+	{ 
+		setScoreLabel(StringUtils::format("%d",scoreLine));
+		autoDown(moveSpeed);	
+		moveSpeed += JieJi_Add;
+	}
 }
 
 //开始计时
@@ -41,8 +43,7 @@ void JiejiScene::startTimer()
 	if(!timeRunning)
 	{		
 		timeRunning = true;
-		moveSpeed = JieJI_Speed;
-		moveTime = clock();
+		moveSpeed = JieJi_Speed;
 		scheduleUpdate();
 	}
 }
@@ -68,57 +69,3 @@ void JiejiScene::endGame(bool bWin)
 	}
 	addChild(createEndLayer(Color4B::GREEN,moshi,scoreLabel->getString(),StringUtils::format("%d",bestScore)),2);
 }
-
-void JiejiScene::logic( float dt )
-{	 
-	moveDown(dt);
-	auto bs = Block::getBlocks();
-	Block *b;
-
-	for(auto it = bs->begin(); it != bs->end(); it++)
-	{
-		b = *it;
-		if(b->getLineIndex()==-1
-			&&b->getLineCount()>scoreLine+1)
-		{
-			//endGame(false);
-			break;
-		}
-	}
-}
-
-void JiejiScene::playRight( Block* b )
-{
-	BaseScene::playRight(b);
-	b->setColor(Color3B::GRAY);
-	
-
-	this->startTimer();
-if (currentLine == 1)
-	{
-		this->moveDown(1.0f/moveSpeed);
-	}
-	if (scoreLine == lineMax)
-	{
-		endGame(true);
-	}
-}
-
-void JiejiScene::playError( Block* b )
-{
-	BaseScene::playError(b);
-	this->stopTimer();
-	auto *blink = Sequence::create(
-		Repeat::create( 
-		Sequence::create(
-		TintTo::create(0.1, 255,255, 255),
-		TintTo::create(0.1, 255,0, 0),
-		NULL), 				 
-		5),
-		CallFunc::create(CC_CALLBACK_0(JiejiScene::endGame,this,false)),
-		NULL
-		);
-	b->runAction(blink);
-}
-
-

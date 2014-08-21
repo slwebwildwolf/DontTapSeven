@@ -18,14 +18,14 @@ Scene* JingdianScene::createScene()
     // return the scene
     return scene;
 }
+
 //¿ªÊ¼ÓÎÏ·
 void JingdianScene::startGame()
 {
 	moshi = "jingdian";
-	lineMax = Chan_LineMax;
+	lineMax = JingDian_LineMax;
 	BaseScene::startGame();
 	setScoreLabel("0.000");
-	
 }
 
 void JingdianScene::update(float dt)
@@ -73,38 +73,4 @@ void JingdianScene::endGame(bool bWin)
 	{
 		addChild(createEndLayer(Color4B::RED,moshi,"",StringUtils::format("%g",((double)bestTime)/1000)),2);
 	}
-	
 }
-
-void JingdianScene::playRight( Block* b )
-{
-	BaseScene::playRight(b);
-	b->setColor(Color3B::GRAY);
-	this->moveDown();
-	this->startTimer();
-
-	log("%d  %d",scoreLine ,lineMax);
-	if (scoreLine == lineMax)
-	{
-		endGame(true);
-	}
-}
-
-void JingdianScene::playError( Block* b )
-{
-	BaseScene::playError(b);
-	this->stopTimer();
-	auto *blink = Sequence::create(
-		Repeat::create( 
-		Sequence::create(
-		TintTo::create(0.1, 255,255, 255),
-		TintTo::create(0.1, 255,0, 0),
-		NULL), 				 
-		5),
-		CallFunc::create(CC_CALLBACK_0(JingdianScene::endGame,this,false)),
-		NULL
-		);
-	b->runAction(blink);
-}
-
- 

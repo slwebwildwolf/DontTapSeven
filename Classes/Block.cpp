@@ -50,9 +50,6 @@ bool Block::initWithArgs(Color3B color, Size size, std::string label, float font
 //´ÓVectorÖÐÒÆ³ýblocks
 void Block::removeBlock()
 {
-	auto c = getColor();
-	//log("Remove block, touch color is (%d,%d,%d)", c.r, c.g, c.b);
-
 	removeFromParent();
 	blocks->eraseObject(this);
 }
@@ -69,14 +66,18 @@ int Block::getLineIndex()
 
 void Block::moveDowm(float dt)
 {
-	this->lineIndex--;
+	/*this->lineIndex--;
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	runAction(Sequence::create(MoveTo::create(dt, Point(getPositionX(), lineIndex*visibleSize.height/4)), 
 		CallFunc::create([this]()
 	{
 		if(lineIndex<-1)
 			this->removeBlock();
-	}), NULL));
+	}), NULL));*/
+
+	this->lineIndex--;
+	///*if(lineIndex<-1)
+	//	this->removeBlock();*/	 
 }
 
 void Block::clearBlocks()
@@ -87,7 +88,6 @@ void Block::clearBlocks()
 		(*it)->removeBlock();	
 		CCLog("clear");
 	}
-
 }
 
 void Block::setLineCount( int lineCount )

@@ -27,6 +27,7 @@ protected:
 	LayerColor *endLayer;
 	std::string moshi;
 public:
+	static cocos2d::Scene* createScene();
 	virtual bool init();  
 	void setScoreLabel(std::string text,float size = 0.5 ,Color3B color = Color3B::GREEN);
 	//添加开始的栏
@@ -37,16 +38,22 @@ public:
 	void addNormalLine(int lineIndex);
 	//方块下移
 	void moveDown(float dt = 0.1f);
-
+	//
+	void autoDown(float speed);
 	//
 	void menuCloseCallback(cocos2d::Ref* pSender);
 	LayerColor* createEndLayer(Color4B bgColor,std::string moshi,std::string score,std::string best);
 
+	//开始计时
+	virtual void startTimer()=0;
+	//结束计时
+	virtual void stopTimer()=0;
 	//
 	void fanHui();
 	void chongLai();
 
 	virtual void startGame();
+	virtual void endGame(bool bWin)=0;
 	virtual void playRight(Block* b);
 	virtual void playError(Block* b);
 	void test(float dt);

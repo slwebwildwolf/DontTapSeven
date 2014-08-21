@@ -1,11 +1,10 @@
 #include "BaseScene.h"
+#include "ConstValue.h"
 
 USING_NS_CC;
 
 bool BaseScene::init()
 {
-	//////////////////////////////
-	// 1. super init first
 	if ( !Layer::init())
 	{
 		return false;
@@ -36,7 +35,8 @@ bool BaseScene::init()
 		{
 			b = *it;
 			currentLine = b->getLineCount();
-			if(currentLine - scoreLine ==1&&b->getBoundingBox().containsPoint(t->getLocation()))
+			if(currentLine - scoreLine ==1&&
+				b->getBoundingBox().containsPoint(t->getLocation()-gameLayer->getPosition()))
 			{
 				++scoreLine;
 				if((b->getColor()==Color3B::BLACK && !checkSeven(currentLine)) ||
@@ -156,7 +156,8 @@ void BaseScene::moveDown(float dt)
 	moveTime = clock();
 	if(linesCount<lineMax)
 	{
-		addNormalLine(4);
+		addNormalLine(linesCount+1);
+		//addNormalLine(4);
 	}
 	else if(!showEnd)
 	{
@@ -164,11 +165,22 @@ void BaseScene::moveDown(float dt)
 		showEnd = true;
 	}
 
-	auto bs = Block::getBlocks();
+	/*auto bs = Block::getBlocks();
 	for(auto it=bs->begin(); it!=bs->end(); it++)
 	{
 		(*it)->moveDowm(dt);
-	}
+	}*/
+
+	gameLayer->runAction(Sequence::create(MoveTo::create(dt, Point(gameLayer->getPositionX(),gameLayer->getPositionY()- visibleSize.height/4)), 
+		CallFunc::create([this]()
+	{
+		log("==========================================");
+		auto bs = Block::getBlocks();
+		for(auto it=bs->begin(); it!=bs->end(); it++)
+		{
+			(*it)->moveDowm(0);
+		}
+	}), NULL));
 }
 
 void BaseScene::menuCloseCallback( cocos2d::Ref* pSender )
@@ -194,7 +206,7 @@ void BaseScene::startGame()
 	moveSpeed=0;
 	removeChildByName("endLayer");
 	Block::clearBlocks();
-
+	gameLayer->setPosition(0,0);
 	addStartLine();
 	addNormalLine(1);
 	addNormalLine(2);
@@ -206,13 +218,36 @@ void BaseScene::startGame()
 void BaseScene::playRight( Block* b )
 {
 	Piano::getInstance()->playMusic();
-	log("Base play right!!");
+	b->setColor(Color3B::GRAY);
+
+	this->startTimer();
+	
+	if (moveSpeed==0)
+	{
+		this->moveDown(Chan_Speed);
+	} 
+
+	if (scoreLine == lineMax)
+	{
+		endGame(true);
+	}
 }
 
 void BaseScene::playError( Block* b )
 {
 	Piano::getInstance()->playMistake();
-	log("Base play error!!");
+	this->stopTimer();
+	auto *blink = Sequence::create(
+		Repeat::create( 
+		Sequence::create(
+		TintTo::create(0.1, 255,255, 255),
+		TintTo::create(0.1, 255,0, 0),
+		NULL), 				 
+		5),
+		CallFunc::create(CC_CALLBACK_0(BaseScene::endGame,this,false)),
+		NULL
+		);
+	b->runAction(blink);
 }
 
 void BaseScene::test( float dt )
@@ -225,4 +260,26 @@ void  BaseScene::setScoreLabel(std::string text,float size,Color3B color)
 	scoreLabel->setString(text);
 	scoreLabel->setColor(color);
 	scoreLabel->setScale(size);	
+}
+
+void BaseScene::autoDown( float speed )
+{
+	float dt = 1.0f/speed;
+	if ((clock()-moveTime)/1000.0f > dt)
+	{
+		moveDown(dt);
+		auto bs = Block::getBlocks();
+		Block *b;
+
+		for(auto it = bs->begin(); it != bs->end(); it++)
+		{
+			b = *it;
+			if(b->getLineIndex()==-1
+				&&b->getLineCount()>scoreLine+1)
+			{
+				endGame(false);
+				break;
+			}
+		}
+	}	
 }

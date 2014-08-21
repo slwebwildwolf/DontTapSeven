@@ -1,20 +1,26 @@
 #ifndef ConstValue_H
 #define ConstValue_H
 
+const int JingDian_LineMax = 50;
+
+const int Chan_LineMax = 999999;
+const int Chan_GameTime = 30000;
+const float Chan_Speed = 0.1f;
+
+const int JieJi_LineMax = 999999;
+const float JieJi_Speed = 2.0f;
+const float JieJi_Add = 0.001f;
+
+const int JiSu_LineMax = 999999;
+const float JiSu_Speed = 2.0f;
+const float JiSu_Add = 0.001f;
+
 #define ObjectTag_MainMenu_Jingdian 1
 #define ObjectTag_MainMenu_Jieji 2
 #define ObjectTag_MainMenu_Chan 3
 #define ObjectTag_MainMenu_JiSu 4
 #define ObjectTag_MainMenu_Sleep 5
 #define ObjectTag_MainMenu_Gengduo 6
-
-#define Chan_LineMax 15
-
-#define JieJi_LineMax 999999
-#define JieJI_Speed 0.5
-
-#define  JiSu_LineMax 999999
-#define  JiSu_Speed 0.5
 
 #define  Sound_A "sound/piano/soundA.mp3"
 #define  Sound_B "sound/piano/soundB.mp3"

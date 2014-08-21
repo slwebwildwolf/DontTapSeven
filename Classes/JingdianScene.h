@@ -11,9 +11,7 @@ class JingdianScene : public BaseScene
 {
 private:	
 
-
 public:
-
     static cocos2d::Scene* createScene();
     CREATE_FUNC(JingdianScene);
 
@@ -27,10 +25,6 @@ public:
 	void stopTimer();
 
 	virtual void update(float dt);
-	//
-	virtual void playRight(Block* b) override;
-	virtual void playError(Block* b) override;
-	
 };
 
 #endif // __JINGDIAN_SCENE_H__

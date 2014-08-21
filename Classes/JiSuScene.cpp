@@ -20,21 +20,19 @@ Scene* JiSuScene::createScene()
 
 void JiSuScene::startGame()
 {
-	scoreSpeed = 0;
 	lineMax = JiSu_LineMax;
-	moveSpeed = JiSu_Speed;
 	moshi = "jisu";
 	BaseScene::startGame();	
-	setScoreLabel(StringUtils::format("%g",scoreSpeed));	
+	setScoreLabel(StringUtils::format("%g",moveSpeed));	
 }
 
 void JiSuScene::update(float dt)
 {
 	if(timeRunning)
-	{
-		gameTime = clock()-startTime;
-		scoreSpeed = scoreLine*1000/((double)gameTime);
-		setScoreLabel(StringUtils::format("%g",scoreSpeed));
+	{ 
+		setScoreLabel(StringUtils::format("%g",moveSpeed));
+		autoDown(moveSpeed);
+		moveSpeed += JiSu_Add;
 	}
 }
 
@@ -43,10 +41,10 @@ void JiSuScene::startTimer()
 {
 	if(!timeRunning)
 	{
-		scheduleUpdate();
 		startTime = clock();
 		timeRunning = true;
-		schedule(schedule_selector(JiSuScene::logic), moveSpeed);
+		moveSpeed = JiSu_Speed;
+		scheduleUpdate();		
 	}
 }
 
@@ -57,72 +55,17 @@ void JiSuScene::stopTimer()
 	{
 		timeRunning = false;
 		unscheduleUpdate();		
-		unschedule(schedule_selector(JiSuScene::logic));
 	}
 }
-
 
 void JiSuScene::endGame(bool bWin)
 {
 	stopTimer();
 	double bestScore = LoadDoubleToXML(moshi.c_str(),0);
-	if (scoreSpeed> bestScore || bestScore == 0)
+	if (moveSpeed> bestScore || bestScore == 0)
 	{
-		bestScore = scoreSpeed;
+		bestScore = moveSpeed;
 		SaveIntegerToXML(moshi.c_str(),bestScore);
 	}
 	addChild(createEndLayer(Color4B::GREEN,moshi,scoreLabel->getString(),StringUtils::format("%g",bestScore)),2);
-
-}
-
-void JiSuScene::logic( float dt )
-{
-	moveDown(dt);
-	auto bs = Block::getBlocks();
-	Block *b;
-
-	for(auto it = bs->begin(); it != bs->end(); it++)
-	{
-		b = *it;
-		if(b->getLineIndex()==-1
-			&&b->getLineCount()>scoreLine+1)
-		{
-			endGame(false);
-			break;
-		}
-	}
-}
-
-void JiSuScene::playRight( Block* b )
-{
-	BaseScene::playRight(b);
-	b->setColor(Color3B::GRAY);
-	if (currentLine == 1)
-	{
-		this->moveDown(moveSpeed);
-	}
-
-	this->startTimer();
-
-	if (scoreLine == lineMax)
-	{
-		endGame(true);
-	}
-}
-
-void JiSuScene::playError( Block* b )
-{
-	BaseScene::playError(b);
-	this->stopTimer();
-	auto *blink = Sequence::create(
-		Repeat::create( 
-		Sequence::create(
-		TintTo::create(0.1, 255,255, 255),
-		TintTo::create(0.1, 255,0, 0),
-		NULL), 				 
-		5),
-		CallFunc::create(CC_CALLBACK_0(JiSuScene::endGame,this,false)),
-		NULL
-		);
-	b->runAction(blink);
 }
