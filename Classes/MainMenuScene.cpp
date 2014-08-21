@@ -91,7 +91,7 @@ Sprite* MainMenu::createMenu(Color3B color, Size size,std::string label, float f
 
 	//ÉèÖÃÎÄ×Ö
 	auto myLabel = Label::create();
-	myLabel->setString(GetXMLString(label));
+	myLabel->setString(Utility::GetXMLString(label));
 	myLabel->setSystemFontSize(fontSize);
 	myLabel->setColor(textColor);
 	
@@ -159,41 +159,3 @@ bool MainMenu::onTouchBegan( Touch* t, Event* e )
 
 	return false;  
 }
-
- ////////////////////////////////////////////////////////////////////////////////////
-/*ValueVector p_map = FileUtils::getInstance()->getValueVectorFromFile("Chinese.xml");  
-ValueMap  map=p_map.at(0).asValueMap();
-std::string info=map.at(label).asString();
-//auto myLabel = LabelBMFont::create(info, "fonts/Chinese.fnt");
-auto myLabel = Label::createWithTTF(label,"fonts/yahei_mono.ttf",fontSize);
-myLabel->setColor(textColor);*/
-////////////////////////////////////////////////////////////////////////////////////////
-	/*ValueVector p_map = FileUtils::getInstance()->getValueVectorFromFile("Chinese.xml");  
-
-	ValueMap  map=p_map.at(0).asValueMap();
-
-	std::string info=map.at(label).asString();
-	auto myLabel = Label::createWithTTF(info,"fonts/yahei_mono.ttf",fontSize);
-	myLabel->setString(info);
-	myLabel->setColor(Color3B::RED); */
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-	auto myLabel = Label::create();
-	myLabel->setString(label);
-	myLabel->setSystemFontSize(fontSize);
-	//myLabel->setTextColor(textColor);
-	myLabel->setColor(Color3B::BLUE);*/
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-// 	auto myLabel = Label::createWithSystemFont(info, "DroidSansFallback", fontSize);
-// #endif
-
-// #if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
-// 	auto myLabel = Label::createWithTTF(info,"fonts/yahei_mono.ttf",fontSize);
-// #endif
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*ValueMap value_map = FileUtils::getInstance()->getValueMapFromFile("Chinese.plist");
-	std::string info = value_map.at(label).asString();*/
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////

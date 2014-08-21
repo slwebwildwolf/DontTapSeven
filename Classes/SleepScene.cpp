@@ -62,8 +62,8 @@ bool SleepScene::init()
 			if(b->getLineIndex()==1&&b->getBoundingBox().containsPoint(t->getLocation()))
 			{
 				++scoreLine;
-				if((b->getColor()==Color3B::BLACK && !checkSeven(currentLine)) ||
-					(b->getColor()==Color3B::WHITE && checkSeven(currentLine)))
+				if((b->getColor()==Color3B::BLACK && !Utility::checkSeven(currentLine)) ||
+					(b->getColor()==Color3B::WHITE && Utility::checkSeven(currentLine)))
 				{
 					
 					b->setColor(Color3B::GRAY);

@@ -39,8 +39,8 @@ bool BaseScene::init()
 				b->getBoundingBox().containsPoint(t->getLocation()-gameLayer->getPosition()))
 			{
 				++scoreLine;
-				if((b->getColor()==Color3B::BLACK && !checkSeven(currentLine)) ||
-					(b->getColor()==Color3B::WHITE && checkSeven(currentLine)))
+				if((b->getColor()==Color3B::BLACK && !Utility::checkSeven(currentLine)) ||
+					(b->getColor()==Color3B::WHITE && Utility::checkSeven(currentLine)))
 				{
 					playRight(b);					
 				}
@@ -68,14 +68,14 @@ LayerColor* BaseScene::createEndLayer(Color4B bgColor,std::string moshi,std::str
 	endLayer->setName("endLayer");
 	//模式
 	auto moshilb = Label::create();
-	moshilb->setString(GetXMLString(moshi)+GetXMLString("moshi"));
+	moshilb->setString(Utility::GetXMLString(moshi)+Utility::GetXMLString("moshi"));
 	moshilb->setPosition(visibleSize.width / 2,visibleSize.height-100);
 	moshilb->setSystemFontSize(36);
 	endLayer->addChild(moshilb);
 	//失败 or 成绩
 	if (score == "")
 	{
-		score=GetXMLString("shibai");
+		score=Utility::GetXMLString("shibai");
 	}	 
 	auto scorelb = Label::create();
 	scorelb->setString(score);
@@ -84,18 +84,18 @@ LayerColor* BaseScene::createEndLayer(Color4B bgColor,std::string moshi,std::str
 	endLayer->addChild(scorelb);
 	//最佳
 	auto bestlb =Label::create();
-	bestlb->setString(GetXMLString("zuijia")+best);
+	bestlb->setString(Utility::GetXMLString("zuijia")+best);
 	bestlb->setPosition(visibleSize.width / 2,visibleSize.height /2-30);
 	bestlb->setSystemFontSize(36);
 	endLayer->addChild(bestlb);
 	//
 	auto chonglailb = Label::create();
-	chonglailb->setString(GetXMLString("chonglai"));
+	chonglailb->setString(Utility::GetXMLString("chonglai"));
 	chonglailb->setSystemFontSize(36);
 	auto item1 = MenuItemLabel::create(chonglailb, CC_CALLBACK_0(BaseScene::chongLai, this) );
 
 	auto fanhuilb = Label::create();
-	fanhuilb->setString(GetXMLString("fanhui"));
+	fanhuilb->setString(Utility::GetXMLString("fanhui"));
 	fanhuilb->setSystemFontSize(36);
 	auto item2 = MenuItemLabel::create(fanhuilb, CC_CALLBACK_0(BaseScene::fanHui, this) );
 

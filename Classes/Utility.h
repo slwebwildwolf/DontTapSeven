@@ -15,12 +15,17 @@ USING_NS_CC;
 #define LoadIntegerFromXML CCUserDefault::getInstance()->getIntegerForKey
 #define LoadDoubleToXML CCUserDefault::getInstance()->getDoubleForKey
 
-//检查7
-template<class T> std::string ConverToString(T value);
-bool checkSeven(int num);
+class Utility
+{
 
-std::string GetXMLString(std::string v);
- 
+public:
+	//检查7
+	static std::string ConverToString(int value);
+	static bool checkSeven(int num);
+	static std::string GetXMLString(std::string v);
+	static long millisecondNow();
+	static std::string getCurrentTime(); 
+};
 
 #endif
 
