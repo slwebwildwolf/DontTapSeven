@@ -23,23 +23,23 @@ void ChanScene::startGame()
 {
 	moshi = "chan";
 	lineMax = Chan_LineMax;
+	gameTime = Chan_GameTime;
+	setScoreLabel(StringUtils::format("%-.3f",gameTime));
 	BaseScene::startGame();
-	setScoreLabel("0.000");
 }
 
 void ChanScene::update(float dt)
 {
-	if(!timeRunning)
-	{return;}
-
-	gameTime = Chan_GameTime-(clock()-startTime);
-	
-	if (gameTime<=0)
-	{
-		gameTime = 0;
-		endGame(true);
+	if (timeRunning)
+	{	
+		gameTime -= dt;
+		if (gameTime<=0)
+		{
+			gameTime = 0.0000f;
+			endGame(true);
+		}
+		setScoreLabel(StringUtils::format("%-.3f",gameTime));
 	}
-	setScoreLabel(StringUtils::format("%g",((double)gameTime)/1000));
 }
 
 //开始计时
@@ -48,7 +48,6 @@ void ChanScene::startTimer()
 	if(!timeRunning)
 	{
 		scheduleUpdate();
-		startTime = clock();
 		timeRunning = true;
 	}
 }

@@ -18,9 +18,7 @@ protected:
 	int currentLine;
 	bool showEnd;
 	bool timeRunning;
-	long startTime;
-	long gameTime;
-	long moveTime;
+	float gameTime;
 	float moveSpeed;
 	LabelAtlas* scoreLabel;
 	Node *gameLayer;
@@ -29,7 +27,7 @@ protected:
 public:
 	static cocos2d::Scene* createScene();
 	virtual bool init();  
-	void setScoreLabel(std::string text,float size = 0.5 ,Color3B color = Color3B::GREEN);
+	void setScoreLabel(std::string text,float sizeScale = 0.5f ,Color3B color = Color3B::GREEN);
 	//添加开始的栏
 	void addStartLine();
 	//添加结束的绿色栏，占满屏幕

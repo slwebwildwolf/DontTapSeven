@@ -30,8 +30,8 @@ void JingdianScene::startGame()
 
 void JingdianScene::update(float dt)
 {
-	gameTime = clock()-startTime;
-	setScoreLabel(StringUtils::format("%g",((double)gameTime)/1000));	
+	gameTime = gameTime + dt;
+	setScoreLabel(StringUtils::format("%-.3f",gameTime));	
 }
 
 //开始计时
@@ -40,7 +40,7 @@ void JingdianScene::startTimer()
 	if(!timeRunning)
 	{
 		scheduleUpdate();
-		startTime = clock();
+		gameTime = 0;
 		timeRunning = true;
 	}
 }
@@ -67,7 +67,7 @@ void JingdianScene::endGame(bool bWin)
 			bestTime = gameTime;
 			SaveIntegerToXML(moshi.c_str(),bestTime);
 		}
-		addChild(createEndLayer(Color4B::GREEN,moshi,scoreLabel->getString(),StringUtils::format("%g",((double)bestTime)/1000)),2);
+		addChild(createEndLayer(Color4B::GREEN,moshi,scoreLabel->getString(),StringUtils::format("%f",gameTime)),2);
 	} 
 	else
 	{

@@ -24,6 +24,7 @@ public:
 	static bool checkSeven(int num);
 	static std::string GetXMLString(std::string v);
 	static long millisecondNow();
+	static float secondNow();
 	static std::string getCurrentTime(); 
 };
 

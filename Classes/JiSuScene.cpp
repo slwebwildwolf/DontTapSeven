@@ -23,16 +23,15 @@ void JiSuScene::startGame()
 	lineMax = JiSu_LineMax;
 	moshi = "jisu";
 	BaseScene::startGame();	
-	setScoreLabel(StringUtils::format("%g",moveSpeed));	
+	setScoreLabel(StringUtils::format("%-.3f",moveSpeed));	
 }
 
 void JiSuScene::update(float dt)
 {
 	if(timeRunning)
 	{ 
-		setScoreLabel(StringUtils::format("%g",moveSpeed));
-		autoDown(moveSpeed);
-		moveSpeed += JiSu_Add;
+		setScoreLabel(StringUtils::format("%-.3f",moveSpeed));
+		moveSpeed += JiSu_Add*dt;
 	}
 }
 
@@ -41,9 +40,9 @@ void JiSuScene::startTimer()
 {
 	if(!timeRunning)
 	{
-		startTime = clock();
 		timeRunning = true;
 		moveSpeed = JiSu_Speed;
+		autoDown(moveSpeed);
 		scheduleUpdate();		
 	}
 }

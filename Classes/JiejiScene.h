@@ -10,7 +10,7 @@ USING_NS_CC;
 class JiejiScene : public BaseScene
 {
 private:
-
+	
 public:
 	static cocos2d::Scene* createScene(); 
 	CREATE_FUNC(JiejiScene);

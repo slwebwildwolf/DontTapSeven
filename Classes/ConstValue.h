@@ -4,16 +4,16 @@
 const int JingDian_LineMax = 50;
 
 const int Chan_LineMax = 999999;
-const int Chan_GameTime = 30000;
+const float Chan_GameTime = 30.0f;
 const float Chan_Speed = 0.1f;
 
 const int JieJi_LineMax = 999999;
 const float JieJi_Speed = 2.0f;
-const float JieJi_Add = 0.001f;
+const float JieJi_Add = 0.05f;
 
 const int JiSu_LineMax = 999999;
 const float JiSu_Speed = 2.0f;
-const float JiSu_Add = 0.001f;
+const float JiSu_Add = 0.05f;
 
 #define ObjectTag_MainMenu_Jingdian 1
 #define ObjectTag_MainMenu_Jieji 2
@@ -58,6 +58,5 @@ const float JiSu_Add = 0.001f;
 #define  Sound_tick "sound/tick.m4a" 
 #define  Sound_touch "sound/touch.m4a"//touch.m4a
 #define  Sound_win "sound/win.mp3"
-
 
 #endif

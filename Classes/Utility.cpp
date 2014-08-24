@@ -40,19 +40,16 @@ std::string Utility::ConverToString( int value )
 
 long Utility::millisecondNow()
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)  
-
 	struct timeval tv;      
 	gettimeofday(&tv, NULL);    
-	return tv.tv_sec * 1000 + tv.tv_usec / 1000;  
-#endif  
+	return tv.tv_sec * 1000 + tv.tv_usec / 1000;  	
+}
 
-#if ( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 )  
+float Utility::secondNow()
+{
 	struct timeval tv;      
 	gettimeofday(&tv, NULL);    
-	return tv.tv_sec * 1000 + tv.tv_usec / 1000;  
-#endif 
-	
+	return (float)tv.tv_sec + tv.tv_usec / 1000000.0f;  	
 }
 
 std::string Utility::getCurrentTime()

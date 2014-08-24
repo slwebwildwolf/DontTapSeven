@@ -31,9 +31,8 @@ void JiejiScene::update(float dt)
 {
 	if(timeRunning)
 	{ 
-		setScoreLabel(StringUtils::format("%d",scoreLine));
-		autoDown(moveSpeed);	
-		moveSpeed += JieJi_Add;
+		setScoreLabel(StringUtils::format("%d",scoreLine));	
+		moveSpeed += JieJi_Add * dt;
 	}
 }
 
@@ -44,6 +43,7 @@ void JiejiScene::startTimer()
 	{		
 		timeRunning = true;
 		moveSpeed = JieJi_Speed;
+		autoDown(moveSpeed);
 		scheduleUpdate();
 	}
 }

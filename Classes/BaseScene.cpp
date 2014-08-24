@@ -20,6 +20,7 @@ bool BaseScene::init()
 	//scoreLabel = Label::createWithBMFont("fonts/score_font.fnt", "");
 	scoreLabel = LabelAtlas::create("123 Test", "fonts/tuffy_bold_italic-charmap.png", 48, 64, ' ');
 	scoreLabel->setPosition(visibleSize.width/2, visibleSize.height-30);
+
 	this->addChild(scoreLabel);;
 
 	startGame();
@@ -153,7 +154,6 @@ void BaseScene::addNormalLine(int lineIndex)
 //·½¿éÏÂÒÆ
 void BaseScene::moveDown(float dt)
 {
-	moveTime = clock();
 	if(linesCount<lineMax)
 	{
 		addNormalLine(linesCount+1);
@@ -180,6 +180,8 @@ void BaseScene::moveDown(float dt)
 		{
 			(*it)->moveDowm(0);
 		}
+		if(timeRunning)
+			autoDown(moveSpeed);
 	}), NULL));
 }
 
@@ -255,19 +257,20 @@ void BaseScene::test( float dt )
 	Piano::getInstance()->playMusic();
 }
 
-void  BaseScene::setScoreLabel(std::string text,float size,Color3B color)
+void  BaseScene::setScoreLabel(std::string text,float sizeScale,Color3B color)
 {	 
 	scoreLabel->setString(text);
 	scoreLabel->setColor(color);
-	scoreLabel->setScale(size);	
+	scoreLabel->setScale(sizeScale);	
+	scoreLabel->setPositionX(visibleSize.width/2 - scoreLabel->getContentSize().width*sizeScale/2.0f);
+ 
 }
 
 void BaseScene::autoDown( float speed )
 {
-	float dt = 1.0f/speed;
-	if ((clock()-moveTime)/1000.0f > dt)
+	if (speed>0 && timeRunning)
 	{
-		moveDown(dt);
+		moveDown(1.0f/speed);
 		auto bs = Block::getBlocks();
 		Block *b;
 
@@ -281,5 +284,5 @@ void BaseScene::autoDown( float speed )
 				break;
 			}
 		}
-	}	
+	}
 }
